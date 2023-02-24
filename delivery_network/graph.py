@@ -1,3 +1,5 @@
+#Pour faire des tests, il faut sauvegarder le doc (Ctrl+S), puis après mettre dans le terminal avec python3.exe tests/lenomdutest, on peut utiliser tab pour aller plus vite
+
 class Graph:
     """
     A class representing graphs as adjacency lists and implementing various algorithms on the graphs. Graphs in the class are not oriented. 
@@ -39,7 +41,7 @@ class Graph:
             for source, destination in self.graph.items():
                 output += f"{source}-->{destination}\n"
         return output
-    
+ #Question1   
     def add_edge(self, node1, node2, power_min, dist=1):
         """
         Adds an edge to the graph. Graphs are not oriented, hence an edge is added to the adjacency list of both end nodes. 
@@ -68,15 +70,31 @@ class Graph:
         self.graph[node1].append((node2, power_min, dist))
         self.graph[node2].append((node1, power_min, dist))
         self.nb_edges += 1
+#Question3 
+def get_path_with_power(self, src, dest, power):
     
 
-    def get_path_with_power(self, src, dest, power):
-        raise NotImplementedError
-    
 
+#Question2
     def connected_components(self):
+        licomponents = []
+        visited_node = {noeud:False for noeud in self.nodes}
 
+        def profound_path(noeud):
+            component = [noeud]
+            for neighbor in self.graph[noeud]:
+                neighbor=neighbor[0]
+                if not visited_node[neighbor]:
+                    visited_node[neighbor]=True
+                    component += profound_path(neighbor)
+            return component
 
+        for noeud in self.nodes:
+            if not visited_node[noeud]:
+                licomponents.append(profound_path(noeud))
+        return licomponents
+
+#frozenset : comme une liste, mais où l'ordre n'importe pas, et les répétitions non plus, c'est comme un ensemble, et supprime les redondances
 
     def connected_components_set(self):
         """
@@ -84,7 +102,11 @@ class Graph:
         For instance, for network01.in: {frozenset({1, 2, 3}), frozenset({4, 5, 6, 7})}
         """
         return set(map(frozenset, self.connected_components()))
-    
+
+
+
+#cout de la fonction exploration : O(1) + nb de voisins de 
+
     def min_power(self, src, dest):
         """
         Should return path, min_power. 
@@ -112,7 +134,7 @@ def graph_from_file(filename):
     G: Graph
         An object of the class Graph with the graph from file_name.
     """
-with open(filename, "r") as file:
+    with open(filename, "r") as file:
         n, m = map(int, file.readline().split())
         g = Graph(range(1, n+1))
         for _ in range(m):
@@ -125,8 +147,9 @@ with open(filename, "r") as file:
                 g.add_edge(node1, node2, power_min, dist)
             else:
                 raise Exception("Format incorrect")
-    return g
-           
+        return g
+# ou sinon, ce code : 
+
 #with open(filename) as file:
 #    ligne1=file.readline().split()
 #   n=int(ligne1[0])
