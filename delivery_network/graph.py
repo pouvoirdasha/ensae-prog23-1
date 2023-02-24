@@ -72,7 +72,7 @@ class Graph:
         self.nb_edges += 1
 #Question3 
 def get_path_with_power(self, src, dest, power):
-    
+    raise NotImplementedError
 
 
 #Question2
@@ -93,6 +93,9 @@ def get_path_with_power(self, src, dest, power):
             if not visited_node[noeud]:
                 licomponents.append(profound_path(noeud))
         return licomponents
+#cout de la fonction exploration : O(1) + nb d'arrêtes + nb de sommets
+#la complexité de la méthode est O(n+m)= O(V+E)
+
 
 #frozenset : comme une liste, mais où l'ordre n'importe pas, et les répétitions non plus, c'est comme un ensemble, et supprime les redondances
 
@@ -105,7 +108,7 @@ def get_path_with_power(self, src, dest, power):
 
 
 
-#cout de la fonction exploration : O(1) + nb de voisins de 
+
 
     def min_power(self, src, dest):
         """
