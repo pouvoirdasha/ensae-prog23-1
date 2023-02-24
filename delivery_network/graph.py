@@ -55,7 +55,19 @@ class Graph:
         dist: numeric (int or float), optional
             Distance between node1 and node2 on the edge. Default is 1.
         """
-        raise NotImplementedError
+        #si le noeud n'est pas dans le dictionnaire (de la forme graph={0:[(1,3,..), (2,...)]})
+        if node1 not in self.graph:
+            self.graph[node1] = []
+            self.nb_nodes += 1
+            self.nodes.append(node1)
+        if node2 not in self.graph:
+            self.graph[node2] = []
+            self.nb_nodes += 1
+            self.nodes.append(node2)
+        #on rajoute les liens 
+        self.graph[node1].append((node2, power_min, dist))
+        self.graph[node2].append((node1, power_min, dist))
+        self.nb_edges += 1
     
 
     def get_path_with_power(self, src, dest, power):
@@ -64,6 +76,15 @@ class Graph:
 
     def connected_components(self):
         raise NotImplementedError
+        for _ in range(m):
+            edge=list(map(int,file.readline().split()))
+            if len(edge)==3:
+                node1, node2, power_min = edge
+                g.add_edge(node1, node2, power_min) #ajoutera 1 par défaut
+            elif len(edge)==4:
+                node1, node2, power_min, dist=edge
+                g.add_edge(node1, node2, power_min, dist)
+            else:
 
 
     def connected_components_set(self):
@@ -100,4 +121,10 @@ def graph_from_file(filename):
     G: Graph
         An object of the class Graph with the graph from file_name.
     """
-    raise NotImplementedError
+    with open(filename) as file:
+        ligne1=file.readline().split()
+        n=int(ligne1[0])
+        m=int(ligne1[1])
+        nodes = [i for i in range(1,n+1)] #on crée une liste avec le nombre de noeuds qu'on veut
+        G=Graph(nodes)
+        #on lit les lignes
