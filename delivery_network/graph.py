@@ -165,7 +165,13 @@ class Graph:
         while self.get_path_with_power2(src, dest,b)==None:
             b=2*b
         return dichotomie(a,b)
-        
+
+#Question7 : bonus
+
+#Question 8 : implémenter d'autres tests 
+
+#Question 9 : bonus 
+
 
 #Question1 et Question4
 def graph_from_file(filename):
