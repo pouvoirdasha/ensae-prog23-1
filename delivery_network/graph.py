@@ -70,27 +70,6 @@ class Graph:
         self.graph[node1].append((node2, power_min, dist))
         self.graph[node2].append((node1, power_min, dist))
         self.nb_edges += 1
-#Question3 
-    def get_path_with_power(self, src, dest, power):
-        #on va faire quelque chose de récursif, on va à chaue fois regarder les voisins des voisins pour trouver le chemin
-        #on va s'inspirer fortement de connected_components
-        visited_node = {noeud:False for noeud in self.nodes}
-    
-        def path_research(noeud, path): #on va faire une recherche de chemin en partant du noeud "noeud"
-            if noeud == dest: #le chemin qui va directement à destination
-                return path
-            for neighbor in self.graph[noeud]: #pour chaque voisin on cherche le voisin
-                neighbor, power_min, dist = neighbor
-                if not visited_node[neighbor] and power_min <= power: #on ne veut pas repasser un même noeud + il faut que la puissance de la voiture soit supérieure à la puissance de la route
-                    visited_node[neighbor]=True #le noeud voisin est visité
-                    res=path_research(neighbor, path+[neighbor]) #on applique au voisin, avec le chemin de base + le voisin
-                    if res is not None:
-                        return res
-            return None #on a visité tous les voisins mais on n'a rien trouvé
-        return path_research(src, [src]) #on part de la source "src"
-
-#il faut trouver la complexité 
-
 
 #Question2
     def connected_components(self):
@@ -124,14 +103,71 @@ class Graph:
         return set(map(frozenset, self.connected_components()))
 
 
+#Question3 
+    def get_path_with_power(self, src, dest, power):
+        #on va faire quelque chose de récursif, on va à chaue fois regarder les voisins des voisins pour trouver le chemin
+        #on va s'inspirer fortement de connected_components
+        visited_node = {noeud:False for noeud in self.nodes}
+        visited_node[src]=True
+
+        def path_research(noeud, path): #on va faire une recherche de chemin en partant du noeud "noeud"
+            if noeud == dest: #le chemin qui va directement à destination
+                return path
+            for neighbor in self.graph[noeud]: #pour chaque voisin on cherche le voisin
+                neighbor, power_min, dist = neighbor
+                if not visited_node[neighbor] and power_min <= power: #on ne veut pas repasser un même noeud + il faut que la puissance de la voiture soit supérieure à la puissance de la route
+                    visited_node[neighbor]=True #le noeud voisin est visité
+                    res=path_research(neighbor, path+[neighbor]) #on applique au voisin, avec le chemin de base + le voisin
+                    if res is not None:
+                        return res
+            return None #on a visité tous les voisins mais on n'a rien trouvé
+        return path_research(src, [src]) #on part de la source "src"
+
+#la complexité est en O(n+m)
+
+#Question5 : bonus
+
+#Question6
+    #on fait la même fonction en rajoutant P
+    def get_path_with_power2(self, src, dest, power):
+            visited_node = {noeud:False for noeud in self.nodes}
+            visited_node[src]=True
+
+            def path_research(noeud, path, P): #on va faire une recherche de chemin en partant du noeud "noeud"
+                if noeud == dest: #le chemin qui va directement à destination
+                    return path, P 
+                for neighbor in self.graph[noeud]: #pour chaque voisin on cherche le voisin
+                    neighbor, power_min, dist = neighbor
+                    if not visited_node[neighbor] and power_min <= power: #on ne veut pas repasser un même noeud + il faut que la puissance de la voiture soit supérieure à la puissance de la route
+                        visited_node[neighbor]=True #le noeud voisin est visité
+                        res=path_research(neighbor, path+[neighbor], P) #on applique au voisin, avec le chemin de base + le voisin
+                        if res is not None:
+                            return res
+                return None #on a visité tous les voisins mais on n'a rien trouvé
+            return path_research(src, [src], 0)
 
     def min_power(self, src, dest):
         """
         Should return path, min_power. 
         """
-        raise NotImplementedError
+        #calcule la puissance minimale pour couvrir le trajet
+        
+        a=0
+        b=1
+        def dichotomie(a,b):
+            while b-a>0.1:
+                if self.get_path_with_power(src, dest, (a+b)/2)!=None:
+                    b=(a+b)/2
+                else:
+                    a = (a+b)/2
+                dichotomie(a,b)
+            return self.get_path_with_power2(src, dest,b), b
+        while self.get_path_with_power2(src, dest,b)==None:
+            b=2*b
+        return dichotomie(a,b)
+        
 
-#Question1 et question4
+#Question1 et Question4
 def graph_from_file(filename):
     """
     Reads a text file and returns the graph as an object of the Graph class.
