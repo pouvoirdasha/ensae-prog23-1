@@ -71,9 +71,23 @@ class Graph:
         self.graph[node2].append((node1, power_min, dist))
         self.nb_edges += 1
 #Question3 
-def get_path_with_power(self, src, dest, power):
-    raise NotImplementedError
-
+    def get_path_with_power(self, src, dest, power):
+        #on va faire quelque chose de récursif, on va à chaue fois regarder les voisins des voisins pour trouver le chemin
+        #on va s'inspirer fortement de connected_components
+        visited_node = {noeud:False for noeud in self.nodes}
+    
+        def path_research(noeud, path): #on va faire une recherche de chemin en partant du noeud "noeud"
+            if noeud == dest: #le chemin qui va directement à destination
+                return path
+            for neighbor in self.graph[noeud]: #pour chaque voisin on cherche le voisin
+                neighbor, power_min, dist = neighbor
+                if not visited_node[neighbor] and power_min <= power: #on ne veut pas repasser un même noeud + il faut que la puissance de la voiture soit supérieure à la puissance de la route
+                    visited_node[neighbor]=True #le noeud voisin est visité
+                    res=path_research(neighbor, path+[neighbor]) #on applique au voisin, avec le chemin de base + le voisin
+                    if res is not None:
+                        return res
+            return None #on a visité tous les voisins mais on n'a rien trouvé
+        return path_research(src, [src]) #on part de la source "src"
 
 #Question2
     def connected_components(self):
@@ -81,13 +95,14 @@ def get_path_with_power(self, src, dest, power):
         visited_node = {noeud:False for noeud in self.nodes}
 
         def profound_path(noeud):
+            #on initialise la liste avec uniquement le noeud de départ
             component = [noeud]
             for neighbor in self.graph[noeud]:
-                neighbor=neighbor[0]
-                if not visited_node[neighbor]:
-                    visited_node[neighbor]=True
-                    component += profound_path(neighbor)
-            return component
+                neighbor=neighbor[0] #on prend le nom du noeud
+                if not visited_node[neighbor]: #s'il n'est pas encore visité
+                    visited_node[neighbor]=True #on change pour le mettre en mode visité
+                    component += profound_path(neighbor) #récursivement, on ajoute les autres voisins
+            return component #on retourne une liste qui donne tous les noeuds accessibles depuis le noeud de départ
 
         for noeud in self.nodes:
             if not visited_node[noeud]:
@@ -95,7 +110,6 @@ def get_path_with_power(self, src, dest, power):
         return licomponents
 #cout de la fonction exploration : O(1) + nb d'arrêtes + nb de sommets
 #la complexité de la méthode est O(n+m)= O(V+E)
-
 
 #frozenset : comme une liste, mais où l'ordre n'importe pas, et les répétitions non plus, c'est comme un ensemble, et supprime les redondances
 
@@ -105,9 +119,6 @@ def get_path_with_power(self, src, dest, power):
         For instance, for network01.in: {frozenset({1, 2, 3}), frozenset({4, 5, 6, 7})}
         """
         return set(map(frozenset, self.connected_components()))
-
-
-
 
 
     def min_power(self, src, dest):
