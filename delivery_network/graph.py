@@ -89,6 +89,9 @@ class Graph:
             return None #on a visité tous les voisins mais on n'a rien trouvé
         return path_research(src, [src]) #on part de la source "src"
 
+#il faut trouver la complexité 
+
+
 #Question2
     def connected_components(self):
         licomponents = []
@@ -121,13 +124,14 @@ class Graph:
         return set(map(frozenset, self.connected_components()))
 
 
+
     def min_power(self, src, dest):
         """
         Should return path, min_power. 
         """
         raise NotImplementedError
 
-
+#Question1 et question4
 def graph_from_file(filename):
     """
     Reads a text file and returns the graph as an object of the Graph class.
@@ -163,17 +167,24 @@ def graph_from_file(filename):
                 raise Exception("Format incorrect")
         return g
 # ou sinon, ce code : 
-
-#with open(filename) as file:
-#    ligne1=file.readline().split()
-#   n=int(ligne1[0])
-#  m=int(ligne1[1])
-# nodes = [i for i in range(1, n+1)]
-#    G=Graph(nodes)
-#    for i in range(m):
-#        lignei=file.readline().split()
-#        node1=int(lignei[0])
-#        node2=int(lignei[1])
-#        power_min=int(lignei[2])
-#        G.add_edge(node1, node2, power_min)
-#    return G
+#Question4
+def graph_from_file_dist(filename):
+    #n=nombre de noeud
+    #m=nombre d'arêtes
+    with open(filename, 'r') as file:
+        ligne1=file.readline().split()
+        n=int(ligne1[0])
+        m=int(ligne1[1])
+        nodes = [i for i in range(1, n+1)]
+        G=Graph(nodes)
+        for i in range(m):
+            lignei=file.readline().split()
+            node1=int(lignei[0])
+            node2=int(lignei[1])
+            power_min=int(lignei[2])
+            if len(lignei)==3:
+                G.add_edge(node1, node2, power_min)
+            else:
+                dist=int(lignei[3])
+                G.add_edge(node1, node2, power_min, dist)       
+    return G
