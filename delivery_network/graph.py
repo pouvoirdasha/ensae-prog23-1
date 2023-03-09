@@ -32,7 +32,7 @@ class Graph:
         self.nb_edges = 0
     
 
-    def __str__(self):
+    def __str__(self): #complexité en O(nb_edges)
         """Prints the graph as a list of neighbors for each node (one per line)"""
         if not self.graph:
             output = "The graph is empty"            
@@ -41,8 +41,11 @@ class Graph:
             for source, destination in self.graph.items():
                 output += f"{source}-->{destination}\n"
         return output
+        
+
+
  #Question1   
-    def add_edge(self, node1, node2, power_min, dist=1):
+    def add_edge(self, node1, node2, power_min, dist=1): #complexité en O(1)
         """
         Adds an edge to the graph. Graphs are not oriented, hence an edge is added to the adjacency list of both end nodes. 
 
@@ -70,32 +73,33 @@ class Graph:
         self.graph[node1].append((node2, power_min, dist))
         self.graph[node2].append((node1, power_min, dist))
         self.nb_edges += 1
+        
 
 #Question2
-    def connected_components(self):
+    def connected_components(self): #complexité en O(nb_nodes + nb_edges)
         licomponents = []
         visited_node = {noeud:False for noeud in self.nodes}
 
-        def profound_path(noeud):
+        def profound_path(node): #complexité en O(nb_node)
             #on initialise la liste avec uniquement le noeud de départ
-            component = [noeud]
-            for neighbor in self.graph[noeud]:
+            component = [node]
+            for neighbor in self.graph[node]:
                 neighbor=neighbor[0] #on prend le nom du noeud
                 if not visited_node[neighbor]: #s'il n'est pas encore visité
                     visited_node[neighbor]=True #on change pour le mettre en mode visité
                     component += profound_path(neighbor) #récursivement, on ajoute les autres voisins
             return component #on retourne une liste qui donne tous les noeuds accessibles depuis le noeud de départ
 
-        for noeud in self.nodes:
-            if not visited_node[noeud]:
-                licomponents.append(profound_path(noeud))
+        for node in self.nodes:
+            if not visited_node[node]:
+                licomponents.append(profound_path(node))
         return licomponents
 #cout de la fonction exploration : O(1) + nb d'arrêtes + nb de sommets
 #la complexité de la méthode est O(n+m)= O(V+E)
 
 #frozenset : comme une liste, mais où l'ordre n'importe pas, et les répétitions non plus, c'est comme un ensemble, et supprime les redondances
 
-    def connected_components_set(self):
+    def connected_components_set(self): #comme connected_components
         """
         The result should be a set of frozensets (one per component), 
         For instance, for network01.in: {frozenset({1, 2, 3}), frozenset({4, 5, 6, 7})}
@@ -104,7 +108,7 @@ class Graph:
 
 
 #Question3 
-    def get_path_with_power(self, src, dest, power):
+    def get_path_with_power(self, src, dest, power): #complexité en O(nb_edges log(nb_edges))
         #on va faire quelque chose de récursif, on va à chaue fois regarder les voisins des voisins pour trouver le chemin
         #on va s'inspirer fortement de connected_components
         visited_node = {noeud:False for noeud in self.nodes}
@@ -123,9 +127,32 @@ class Graph:
             return None #on a visité tous les voisins mais on n'a rien trouvé
         return path_research(src, [src]) #on part de la source "src"
 
-#la complexité est en O(n+m)
-
 #Question5 : bonus
+    def get_shorter_path_with_power(self, src, dest, power):
+        #on va utiliser l'algorithme de Dijkstra avec la condition sur la puissance
+        d_dist={noeud : None for noeud in self.nodes}
+        d_dist[src]=0 #la distance entre src et src est 0
+        d_power={noeud : None for noeud in self.nodes} #on initialise tous les noeuds à +l'infini, ou ici, None
+        d_power[src]=0 #la puissance nécessaire pour aller de src à src est 0
+        path={noeud:[] for noeud in self.nodes}
+        path[src]=[src]
+        #on veut créer un sous-graphe tel que la distanc entre un sommet et src soit connue et minimale
+        sub_graph=[(0,src)]
+        while sub_graph !=[]:
+            dist_node, node = min(sub_graph)
+            sub_graph.remove((dist_node, node))
+            if node == dest: #si ça atteint l'arrivée
+                return path[dest]
+            for other_node in self.graph[node]:
+                other_node, necessary_power, dist_between = other_node
+                if necessary_power<= power : 
+                    if d_power[other_node] is None or dist_between + d_dist[node]< d_dist[other_node]: #on veut prendre le minimum, on teste s'il y a mieux
+                        d_power[other_node]=max(d_power[node], necessary_power)
+                        d_dist[other_node]=dist_between + d_dist[node]
+                        path[other_node]=path[node]+[other_node]
+                        sub_graph.append((d_dist[other_node], other_node))
+        return None
+
 
 #Question6
     #on fait la même fonction en rajoutant P
@@ -156,7 +183,7 @@ class Graph:
         b=1
         def dichotomie(a,b):
             while b-a>0.1:
-                if self.get_path_with_power(src, dest, (a+b)/2)!=None:
+                if self.get_path_with_power2(src, dest, (a+b)/2)!=None:
                     b=(a+b)/2
                 else:
                     a = (a+b)/2
