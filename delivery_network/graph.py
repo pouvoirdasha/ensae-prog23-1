@@ -1,5 +1,5 @@
 #Pour faire des tests, il faut sauvegarder le doc (Ctrl+S), puis après mettre dans le terminal avec python3.exe tests/lenomdutest, on peut utiliser tab pour aller plus vite
-
+import time
 import graphviz
 
 class Graph:
@@ -78,12 +78,13 @@ class Graph:
         
 
 #Question2
+
     def connected_components(self): #complexité en O(nb_nodes + nb_edges)
         licomponents = []
         visited_node = {noeud:False for noeud in self.nodes}
 
         def profound_path(node): #complexité en O(nb_node)
-            #on initialise la liste avec uniquement le noeud de départ
+        #on initialise la liste avec uniquement le noeud de départ
             component = [node]
             for neighbor in self.graph[node]:
                 neighbor=neighbor[0] #on prend le nom du noeud
@@ -134,7 +135,7 @@ class Graph:
         #on va utiliser l'algorithme de Dijkstra avec la condition sur la puissance
         d_dist={noeud : None for noeud in self.nodes}
         d_dist[src]=0 #la distance entre src et src est 0
-        d_power={noeud : None for noeud in self.nodes} #on initialise tous les noeuds à +l'infini, ou ici, None
+        d_power={noeud : None for noeud in self.nodes} #on initialise tous les noeuds à +l'infini, ou ici, None pour faciliter
         d_power[src]=0 #la puissance nécessaire pour aller de src à src est 0
         path={noeud:[] for noeud in self.nodes}
         path[src]=[src]
@@ -197,10 +198,29 @@ class Graph:
 
 #Question7 : bonus
 
+def representation(filename):
+    file=open(filename, 'r')
+    graph = graphviz.Digraph(file)
+    dist=1
+    line_1=file.readline().split(' ')
+    for line in file:
+        list_line=line.split(' ')
+        if list_line==[]:
+            continue
+        if len(list_line)==4:
+            dist=int(list_line[3])
+        graph.node(list_line[0])
+        graph.node(list_line[0])
+        graph.edge(list_line[0], list_line[1], arrowhead='none')
+    file.close()
+    graph.render()
+    raise NotImplementedError
+
 #Question 8 : implémenter d'autres tests 
 
-#Question 9 : bonus 
+#les tests sont complétés 
 
+#Question 9 : bonus 
 
 #Question1 et Question4
 def graph_from_file(filename):
@@ -259,3 +279,26 @@ def graph_from_file_dist(filename):
                 dist=int(lignei[3])
                 G.add_edge(node1, node2, power_min, dist)       
     return G
+
+
+
+###Séance2
+
+#Question10
+#on doit tester le temps sur min_power
+#cesera pa assez optimal, donc ça motive le reste de la séance
+
+
+
+#Question12
+#on trie les arêtes par poids croissant
+#dans l'ordre on ajoute à l'arbre les arêtes si elle ne fait pas de cycle avec les arêtes déjà ajoutées
+#poids de l'arbre = somme des arêtes
+#si même poids d'arêtes, on refait avec un ordre différent mais revient au même
+
+def kruskal(self):
+    #on veut un arbre couvrant de poids minimal
+    
+    raise NotImplementedError
+
+
