@@ -227,6 +227,44 @@ def estimated_time(nb_file): #entrer le numéro du fichier
         sum = sum + t_fin - t_dep
     return (n * sum/10)
 
+#Question11 : bonus
+
+#Question12
+
+
+
+class UnionFind:
+    def __init__(self, G=Graph()):
+        """
+        Initialise la structure de données Union-Find avec n éléments,
+        chacun étant initialement dans sa propre partition.
+        """
+        self.parent = [i for i in G.nodes] #tableau qui contient le parent de chaque élément, initialisé à lui-même
+        self.rank = [0 for i in G.nodes] #stocke la hauteur (=le rang) de chaque arbre
+
+    def find(self, x): #trouver l'ensemble auquel x appartient en remontant la chaine de parents
+        if self.parent[x] != x: #si x n'est pas la racine, on continue 
+            self.parent[x] = self.find(self.parent[x]) #récursivité + on comprime pour être plus efficace
+        return self.parent[x]
+
+    def union(self, x, y): #relier les arbres
+        root_x, root_y = self.find(x), self.find(y) #on trouve les racines de x et y
+        if self.rank[root_x] < self.rank[root_y]:
+            self.parent[root_x] = root_y #on relie l'arbre de hauteur inférieur à la racine de l'arbre de rang supérieur 
+        elif self.rank[root_x] > self.rank[root_y]:
+            self.parent[root_y] = root_x
+        else:
+            self.parent[root_y] = root_x #si même rang, on les relie + on augmete le rang 
+            self.rank[root_x] += 1
+
+
+
+
+
+
+
+
+
 
 #Question1 et Question4
 def graph_from_file(filename):
