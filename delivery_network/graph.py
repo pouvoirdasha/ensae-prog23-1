@@ -205,6 +205,28 @@ class Graph:
 
 #Question 9 : bonus 
 
+#Question10
+'''voir test_s2q10_time.py pour l'éxecution'''
+def estimated_time(nb_file): #entrer le numéro du fichier
+    assert nb_file in [i for i in range(1,11)] #on vérifie qu'il est bien entre 1 et 10
+    name_route_file="input/routes."+ str(nb_file) + ".in"
+    f=open(name_route_file, 'r')
+    ligne1 = f.readline().split()
+    n = int(ligne1[0])
+    sum = 0
+    p1="input/network."
+    p2=".in"
+    for i in range(10): #on estime le temps avec les 10 premières lignes du fichier
+        ligne = f.readline().split()
+        n1 = int(ligne[0])
+        n2 = int(ligne[1])
+        t_dep = time.perf_counter()
+        name_network_file=p1+str(nb_file)+p2
+        res = graph_from_file(name_network_file).min_power(n1, n2)
+        t_fin = time.perf_counter()
+        sum = sum + t_fin - t_dep
+    return (n * sum/10)
+
 
 #Question1 et Question4
 def graph_from_file(filename):
@@ -263,15 +285,12 @@ def graph_from_file_dist(filename):
                 dist=int(lignei[3])
                 G.add_edge(node1, node2, power_min, dist)       
     return G
-
-
-
-###Séance2
+#Séance2
 
 #Question10
 #on doit tester le temps sur min_power
 #cesera pa assez optimal, donc ça motive le reste de la séance
-
+    
 
 
 #Question12

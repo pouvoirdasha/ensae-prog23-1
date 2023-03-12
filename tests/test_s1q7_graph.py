@@ -33,3 +33,36 @@ G.add_edge2(5, 7)
 G.add_edge2(8, 9)
 
 G.display()
+
+'''
+import graphviz
+graph = Graph('G', filename='graph', engine='neato')
+
+#on ajoute les noeuds
+graph.node('1')
+graph.node('2')
+graph.node('3')
+graph.node('4')
+graph.node('5')
+graph.node('6')
+graph.node('7')
+graph.node('8')
+graph.node('9')
+graph.node('10')
+graph.node('11')
+
+#on ajoute les arêtes
+graph.edge('1', '2')
+graph.edge('2', '3')
+graph.edge('1', '6')
+graph.edge('3', '4')
+graph.edge('4', '10')
+graph.edge('2', '5')
+graph.edge('5', '7')
+graph.edge('1', '8')
+graph.edge('8', '9')
+
+#on affiche le graphe
+graph.view()
+
+'''
