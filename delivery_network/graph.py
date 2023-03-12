@@ -1,6 +1,6 @@
 #Pour faire des tests, il faut sauvegarder le doc (Ctrl+S), puis après mettre dans le terminal avec python3.exe tests/lenomdutest, on peut utiliser tab pour aller plus vite
 import time
-import graphviz
+from graphviz import Graph as g
 
 class Graph:
     """
@@ -197,30 +197,14 @@ class Graph:
         return dichotomie(a,b)
 
 #Question7 : bonus
-
-def representation(filename):
-    file=open(filename, 'r')
-    graph = graphviz.Digraph(file)
-    dist=1
-    line_1=file.readline().split(' ')
-    for line in file:
-        list_line=line.split(' ')
-        if list_line==[]:
-            continue
-        if len(list_line)==4:
-            dist=int(list_line[3])
-        graph.node(list_line[0])
-        graph.node(list_line[0])
-        graph.edge(list_line[0], list_line[1], arrowhead='none')
-    file.close()
-    graph.render()
-    raise NotImplementedError
+"cf test_s1q7_graph"
 
 #Question 8 : implémenter d'autres tests 
 
-#les tests sont complétés 
+"les tests sont complétés"
 
 #Question 9 : bonus 
+
 
 #Question1 et Question4
 def graph_from_file(filename):
