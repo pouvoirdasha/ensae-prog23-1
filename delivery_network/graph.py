@@ -218,11 +218,11 @@ def estimated_time(nb_file): #entrer le numéro du fichier
     p2=".in"
     for i in range(10): #on estime le temps avec les 10 premières lignes du fichier
         ligne = f.readline().split()
-        n1 = int(ligne[0])
-        n2 = int(ligne[1])
+        node1 = int(ligne[0])
+        node2 = int(ligne[1])
         t_dep = time.perf_counter()
         name_network_file=p1+str(nb_file)+p2
-        res = graph_from_file(name_network_file).min_power(n1, n2)
+        res = graph_from_file(name_network_file).min_power(node1, node2)
         t_fin = time.perf_counter()
         sum = sum + t_fin - t_dep
     return (n * sum/10)
