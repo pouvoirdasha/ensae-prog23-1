@@ -205,57 +205,8 @@ class Graph:
 
 #Question 9 : bonus 
 
-#Question10
-'''voir test_s2q10_time.py pour l'éxecution'''
-def estimated_time(nb_file): #entrer le numéro du fichier
-    assert nb_file in [i for i in range(1,11)] #on vérifie qu'il est bien entre 1 et 10
-    name_route_file="input/routes."+ str(nb_file) + ".in"
-    f=open(name_route_file, 'r')
-    ligne1 = f.readline().split()
-    n = int(ligne1[0])
-    sum = 0
-    p1="input/network."
-    p2=".in"
-    for i in range(10): #on estime le temps avec les 10 premières lignes du fichier
-        ligne = f.readline().split()
-        node1 = int(ligne[0])
-        node2 = int(ligne[1])
-        t_dep = time.perf_counter()
-        name_network_file=p1+str(nb_file)+p2
-        res = graph_from_file(name_network_file).min_power(node1, node2)
-        t_fin = time.perf_counter()
-        sum = sum + t_fin - t_dep
-    return (n * sum/10)
-
-#Question11 : bonus
-
-#Question12
 
 
-
-class UnionFind:
-    def __init__(self, G=Graph()):
-        """
-        Initialise la structure de données Union-Find avec n éléments,
-        chacun étant initialement dans sa propre partition.
-        """
-        self.parent = [i for i in G.nodes] #tableau qui contient le parent de chaque élément, initialisé à lui-même
-        self.rank = [0 for i in G.nodes] #stocke la hauteur (=le rang) de chaque arbre
-
-    def find(self, x): #trouver l'ensemble auquel x appartient en remontant la chaine de parents
-        if self.parent[x] != x: #si x n'est pas la racine, on continue 
-            self.parent[x] = self.find(self.parent[x]) #récursivité + on comprime pour être plus efficace
-        return self.parent[x]
-
-    def union(self, x, y): #relier les arbres
-        root_x, root_y = self.find(x), self.find(y) #on trouve les racines de x et y
-        if self.rank[root_x] < self.rank[root_y]:
-            self.parent[root_x] = root_y #on relie l'arbre de hauteur inférieur à la racine de l'arbre de rang supérieur 
-        elif self.rank[root_x] > self.rank[root_y]:
-            self.parent[root_y] = root_x
-        else:
-            self.parent[root_y] = root_x #si même rang, on les relie + on augmete le rang 
-            self.rank[root_x] += 1
 
 
 
@@ -323,23 +274,88 @@ def graph_from_file_dist(filename):
                 dist=int(lignei[3])
                 G.add_edge(node1, node2, power_min, dist)       
     return G
+
+
+
+
+
 #Séance2
 
 #Question10
 #on doit tester le temps sur min_power
-#cesera pa assez optimal, donc ça motive le reste de la séance
+#ce n'est pas assez optimal, donc ça motive le reste de la séance
     
+'''voir test_s2q10_time.py pour l'éxecution'''
+def estimated_time(nb_file): #entrer le numéro du fichier
+    assert nb_file in [i for i in range(1,11)] #on vérifie qu'il est bien entre 1 et 10
+    name_route_file="input/routes."+ str(nb_file) + ".in"
+    f=open(name_route_file, 'r')
+    ligne1 = f.readline().split()
+    n = int(ligne1[0])
+    sum = 0
+    p1="input/network."
+    p2=".in"
+    for i in range(10): #on estime le temps avec les 10 premières lignes du fichier
+        ligne = f.readline().split()
+        node1 = int(ligne[0])
+        node2 = int(ligne[1])
+        t_dep = time.perf_counter()
+        name_network_file=p1+str(nb_file)+p2
+        res = graph_from_file(name_network_file).min_power(node1, node2)
+        t_fin = time.perf_counter()
+        sum = sum + t_fin - t_dep
+    return (n * sum/10)
 
+#Question11 : bonus
 
 #Question12
+
 #on trie les arêtes par poids croissant
 #dans l'ordre on ajoute à l'arbre les arêtes si elle ne fait pas de cycle avec les arêtes déjà ajoutées
 #poids de l'arbre = somme des arêtes
 #si même poids d'arêtes, on refait avec un ordre différent mais revient au même
+class UnionFind:
+    def __init__(self, n):
+        """
+        Initialise la structure de données Union-Find avec n éléments,
+        chacun étant initialement dans sa propre partition.
+        """
+        self.parent = [k for k in range(n)] #tableau qui contient le parent de chaque élément, initialisé à lui-même
+        self.rank = [0]*n #stocke la hauteur (=le rang) de chaque arbre
 
-def kruskal(self):
-    #on veut un arbre couvrant de poids minimal
+    def find(self, x): #trouver l'ensemble auquel x appartient en remontant la chaine de parents
+        if self.parent[x] != x: #si x n'est pas la racine, on continue 
+            self.parent[x] = self.find(self.parent[x]) #récursivité + on comprime pour être plus efficace
+        return self.parent[x]
+
+    def union(self, x, y): #relier les arbres
+        root_x, root_y = self.find(x), self.find(y) #on trouve les racines de x et y
+        if self.rank[root_x] < self.rank[root_y]:
+            self.parent[root_x] = root_y #on relie l'arbre de hauteur inférieur à la racine de l'arbre de rang supérieur 
+        elif self.rank[root_x] > self.rank[root_y]:
+            self.parent[root_y] = root_x
+        else:
+            self.parent[root_y] = root_x #si même rang, on les relie + on augmete le rang 
+            self.rank[root_x] += 1
     
-    raise NotImplementedError
+def kruskal(g):
+    edges=[]
+    sorted_edges=[]
+    for node in g.graph:
+        for connected_node, power, dist in g.graph[node]:
+            edges.append((power,node,connected_node))
+    sorted_edges=sorted(edges, key=lambda l: l[0]) #on trie les arêtes par poids croissant
+    uf = UnionFind(g.nb_nodes + max(g.nodes)) #on crée une structure d'unionfind, on rajoute le dernier sinon on est out of range dans la suite de la fonction
+    g_mst = Graph() #on va créer l'arbre couvrant de poids minimal
+    for power, node1, node2 in sorted_edges:
+        if uf.find(node1)!= uf.find(node2): #on vérifie si ça ne crée pas de cycle 
+            g_mst.add_edge(node1, node2, power) #on l'ajoute à l'arbre couvrant 
+            uf.union(node1, node2) #on les lie 
+    return g_mst
+
+#Question 13
+'''voir test_s2q13_kruskal pour test'''
+
+
 
 
