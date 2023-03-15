@@ -26,10 +26,10 @@ print(min_pwg, traj_g)
 
 g=graph_from_file("input/network.2.in")
 g2=kruskal(g)
-print(g2)
+
 t_dep= time.perf_counter()
 h=orienter_arbre(g2)
-min_pwg, traj_g=min_power_kruskal(g2, h, 10, 1)
+min_pwg, traj_g=min_power_kruskal(g2, h, 1000, 60)
 t_fin= time.perf_counter()
 t=t_fin-t_dep
 print(min_pwg, traj_g, "le temps d'éxecution est ", t , "sec")

@@ -7,6 +7,7 @@ gnet1 = graph_from_file("input/network.01.in")
 print(gnet1)
 print(kruskal(gnet1))
 
+
 #On teste sur les fichiers plus importants (avec le temps d'exceution): 
 
 
