@@ -320,7 +320,7 @@ class UnionFind:
         Initialise la structure de données Union-Find avec n éléments,
         chacun étant initialement dans sa propre partition.
         """
-        self.parent = [k for k in range(n)] #tableau qui contient le parent de chaque élément, initialisé à lui-même
+        self.parent = [k for k in range(n+1)] #tableau qui contient le parent de chaque élément, initialisé à lui-même
         self.rank = [0]*n #stocke la hauteur (=le rang) de chaque arbre
 
     def find(self, x): #trouver l'ensemble auquel x appartient en remontant la chaine de parents
@@ -358,9 +358,54 @@ def kruskal(g):
 
 
 #Question14
-def min_power_kruskal(g, src, dest) :
-    return kruskal(g).min_power(src, dest) #on applique juste min_power à l'arbre couvrant de poids minimal
-'''voir test_s2q13_kruskal pour les tests'''
+#on observe que la fonction minpower ne fonctionne pas sur les grands fichiers avec kruskal, 
+#On cherche donc une autre solution
+#Pour avoir la fonction qui calcule la puissance minimale d'un camion pour un trajet t donné et le chemin,
+#On peut implementer une fonction similaire à get path with power mais sur la fonction kruskal 
+#D'abord on va orienter l'arbre vers le premier node, ce qui permet d'avoir le plus court chemin en remontant vers les ancetres 
+def orienter_arbre(g,root=1): 
+    parent = [k for k in range(g.nb_nodes+1)] #tableau qui contient le parent de chaque élément, initialisé à lui-même
+    rank = [0]*(g.nb_nodes+1)
+    power = [0]*(g.nb_nodes+1)
+    #on realise un parcours en DFS de l'arbre, en initialisant à 1 la racine de l'arbre 
+    def DFS(node, father): 
+        for child, power_min, dist in g.graph[node]:
+            if child!=father: #ici, le node enfant = le neoud de rang +1 de notre noeud et le noeud father est le noeud de rang-1 de notre noeud
+                parent[child]=node  #on orinente l'enfant vers son parent 
+                rank[child]=rank[node]+1 #le rang de l'enfant est supérieur au rang du noeud 
+                power[child]=power_min #on recupere également la puissance pour notre programme 
+                DFS(child, node) #on definit cette fonction par recursivité 
+    
+    DFS(1,1) #DFS est  une fonction reccursive. On appelle DFS sur 1,1 puisque 1 est son propre parent, ce qui nous permet de la lancer sur tout arbre
+    return parent, rank, power 
+#recherche du trajet et de la puissance minimale avec la source et la destination = deux noeuds qu'on souhaite relier 
+#Si le rang des deux noeuds n'est pas le meme par rapport au premier noeud
+#alors on remonte l'arbre de parenté
+def min_power_kruskal(g, dfs, src, dest): 
+    parent=dfs[0]
+    rank=dfs[1]
+    power=dfs[2]
+    min_pkr=0
+    traj_src=[]
+    traj_d=[]
+    while rank[src] < rank[dest]:
+        min_pkr=max(power[dest], min_pkr) #a chaque fois qu'on remonte l'arbre, on verifie qu'on a bien la puissance minimal (max parmi les arretes)
+        traj_d+=[dest] #Pour faire le trajet on ajoute le noeud à chaque iteration à la liste de trajet
+        dest=parent[dest] #on remonte l'arbre 
+    while rank[dest] < rank[src]:  #de meme mais cette fois si le rang de la source est supérieur au rag de la destination
+        min_pkr=max(power[src], min_pkr)
+        traj_src+=[src]
+        src=parent[src]
+    while dest !=src: #une fois au meme rang, on travaille sur les deux noeuds (source et destination)
+        #On remonte l'arbre tant que les deux noeuds ne sont pas égaux (auquel cas on a trouvé notre chemin)
+        min_pkr=max(power[src], power[dest], min_pkr)
+        traj_src+=[src]
+        traj_d+=[dest]
+        src=parent[src]
+        dest=parent[dest]
+    traj_f=traj_src+[src]+traj_d[::-1] #on ajout eles trajets depuis la source et depuis la destination ensemble 
+    return min_pkr, traj_f
+    
 
 #Question15
 #on estime le temps mais avec l'arbre couvrant de poids minimal
@@ -381,11 +426,11 @@ def estimated_time_kruskal(nb_file): #entrer le numéro du fichier
         t_dep = time.perf_counter()
         name_network_file=p1+str(nb_file)+p2
         g=graph_from_file(name_network_file)
-        res = min_power_kruskal(g, node1, node2)
+        g=kruskal(g)
+        res = min_power_kruskal(g, orienter_arbre(g), node1, node2)
         t_fin = time.perf_counter()
         sum = sum + t_fin - t_dep
-    return (n * sum/4)
-
+    return n * sum/4
 
 
 

@@ -7,6 +7,9 @@ gnet1 = graph_from_file("input/network.01.in")
 print(gnet1)
 print(kruskal(gnet1))
 
+#On teste sur les fichiers plus importants (avec le temps d'exceution): 
+
+
 #le graph est déjà un arbre couvrant car il est d'un seul tenant donc cela renvoie la même chose
 #les autres graphes de type network.0x.in sont trop simples, déjà des arbres couvrants donc on va tester sur autre chose
 
