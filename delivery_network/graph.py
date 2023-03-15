@@ -419,7 +419,7 @@ def estimated_time_kruskal(nb_file): #entrer le numéro du fichier
     sum = 0
     p1="input/network."
     p2=".in"
-    for i in range(n): #on estime le temps avec les 10 premières lignes du fichier
+    for i in range(n):
         ligne = f.readline().split()
         node1 = int(ligne[0])
         node2 = int(ligne[1])
