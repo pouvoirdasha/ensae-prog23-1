@@ -363,20 +363,20 @@ def kruskal(g):
 #Pour avoir la fonction qui calcule la puissance minimale d'un camion pour un trajet t donné et le chemin,
 #On peut implementer une fonction similaire à get path with power mais sur la fonction kruskal 
 #D'abord on va orienter l'arbre vers le premier node, ce qui permet d'avoir le plus court chemin en remontant vers les ancetres 
-def orienter_arbre(g,root=1): 
+def oriented_tree(g,root=1): #complexité en O(V+E)
     parent = [k for k in range(g.nb_nodes+1)] #tableau qui contient le parent de chaque élément, initialisé à lui-même
     rank = [0]*(g.nb_nodes+1)
     power = [0]*(g.nb_nodes+1)
-    #on realise un parcours en DFS de l'arbre, en initialisant à 1 la racine de l'arbre 
+    #on réalise un parcours en profondeur (DFS) de l'arbre, en initialisant à 1 la racine de l'arbre 
     def DFS(node, father): 
         for child, power_min, dist in g.graph[node]:
             if child!=father: #ici, le node enfant = le neoud de rang +1 de notre noeud et le noeud father est le noeud de rang-1 de notre noeud
-                parent[child]=node  #on orinente l'enfant vers son parent 
+                parent[child]=node  #on oriente l'enfant vers son parent 
                 rank[child]=rank[node]+1 #le rang de l'enfant est supérieur au rang du noeud 
-                power[child]=power_min #on recupere également la puissance pour notre programme 
-                DFS(child, node) #on definit cette fonction par recursivité 
+                power[child]=power_min #on récupere également la puissance pour notre programme 
+                DFS(child, node) #on définit cette fonction par récursivité 
     
-    DFS(1,1) #DFS est  une fonction reccursive. On appelle DFS sur 1,1 puisque 1 est son propre parent, ce qui nous permet de la lancer sur tout arbre
+    DFS(1,1) #DFS est  une fonction récursive. On appelle DFS sur 1,1 puisque 1 est son propre parent, ce qui nous permet de la lancer sur tout l'arbre
     return parent, rank, power 
 #recherche du trajet et de la puissance minimale avec la source et la destination = deux noeuds qu'on souhaite relier 
 #Si le rang des deux noeuds n'est pas le meme par rapport au premier noeud
@@ -419,18 +419,32 @@ def estimated_time_kruskal(nb_file): #entrer le numéro du fichier
     sum = 0
     p1="input/network."
     p2=".in"
-    for i in range(5):
+    name_network_file=p1+str(nb_file)+p2
+    g=graph_from_file(name_network_file)
+    g_kruskal=kruskal(g)
+    ot=oriented_tree(g_kruskal)
+    for i in range(n): #on estime le temps avec les 5 premières lignes du fichier
         ligne = f.readline().split()
         node1 = int(ligne[0])
         node2 = int(ligne[1])
-        name_network_file=p1+str(nb_file)+p2
-        g=graph_from_file(name_network_file)
-        g=kruskal(g)
         t_dep = time.perf_counter()
-        res = min_power_kruskal(g, orienter_arbre(g), node1, node2)
+        res = min_power_kruskal(g_kruskal, ot, node1, node2)
         t_fin = time.perf_counter()
         sum = sum + t_fin - t_dep
-    return n*(sum/5)
+    return sum
+
+
+
+"""def routes_from_file(nb_file_routes): 
+    filename = "input/routes." + str(nb_file_routes) + ".in"
+    f = open(filename, 'r')
+    n =int(f.readline().rstrip())
+    for i in range(n):
+        line=f.readline.split()
+
+"""
+
+
 
 
 
