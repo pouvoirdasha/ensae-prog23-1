@@ -1,6 +1,6 @@
-from graph import Graph, graph_from_file
+from graph import Graph, graph_from_file, routes_from_file
 
-
+"""
 data_path = "input/"
 #file_name = "network.01.in"
 
@@ -13,3 +13,7 @@ g.add_edge(2,1,18)
 
 print(g)
 print(g.nodes)
+"""
+
+h=routes_from_file(1)
+print(h)

@@ -435,14 +435,22 @@ def estimated_time_kruskal(nb_file): #entrer le numéro du fichier
 
 
 
-"""def routes_from_file(nb_file_routes): 
+def routes_from_file(nb_file_routes): 
     filename = "input/routes." + str(nb_file_routes) + ".in"
     f = open(filename, 'r')
-    n =int(f.readline().rstrip())
+    n = int(f.readline().rstrip())
+    paths_profit = []
     for i in range(n):
-        line=f.readline.split()
+        line=f.readline().split()
+        node1 = int(line[0])
+        node2 = int(line[1])
+        profit = int(line[2])
+        paths_profit.append([node1, node2, profit])
+    paths_profit_sorted=sorted(paths_profit , key=lambda l: -l[2])
+    return paths_profit_sorted
 
-"""
+
+
 
 
 
