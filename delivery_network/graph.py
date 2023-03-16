@@ -419,18 +419,18 @@ def estimated_time_kruskal(nb_file): #entrer le numéro du fichier
     sum = 0
     p1="input/network."
     p2=".in"
-    for i in range(n):
+    for i in range(5):
         ligne = f.readline().split()
         node1 = int(ligne[0])
         node2 = int(ligne[1])
-        t_dep = time.perf_counter()
         name_network_file=p1+str(nb_file)+p2
         g=graph_from_file(name_network_file)
         g=kruskal(g)
+        t_dep = time.perf_counter()
         res = min_power_kruskal(g, orienter_arbre(g), node1, node2)
         t_fin = time.perf_counter()
         sum = sum + t_fin - t_dep
-    return sum
+    return n*(sum/5)
 
 
 
