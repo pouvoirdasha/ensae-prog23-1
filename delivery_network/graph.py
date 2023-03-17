@@ -433,21 +433,31 @@ def estimated_time_kruskal(nb_file): #entrer le numéro du fichier
         sum = sum + t_fin - t_dep
     return sum
 
-
+#retourne une liste de listes triée par ordre decroissant en termes d'utilité 
 
 def routes_from_file(nb_file_routes): 
     filename = "input/routes." + str(nb_file_routes) + ".in"
     f = open(filename, 'r')
     n = int(f.readline().rstrip())
+    p1="input/network."
+    p2=".in"
+    name_network_file=p1+str(nb_file_routes)+p2
+    g=graph_from_file(name_network_file)
+    g_kruskal=kruskal(g)
+    ot=oriented_tree(g_kruskal)
     paths_profit = []
     for i in range(n):
         line=f.readline().split()
         node1 = int(line[0])
         node2 = int(line[1])
         profit = int(line[2])
-        paths_profit.append([node1, node2, profit])
+        min_pow, path = min_power_kruskal(g_kruskal, ot, node1, node2)
+        paths_profit.append([node1, node2, profit, min_pow])
     paths_profit_sorted=sorted(paths_profit , key=lambda l: -l[2])
     return paths_profit_sorted
+
+
+
 
 
 
