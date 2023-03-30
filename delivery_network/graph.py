@@ -456,6 +456,18 @@ def routes_from_file(nb_file_routes):
     paths_profit_sorted=sorted(paths_profit , key=lambda l: -l[2])
     return paths_profit_sorted
 
+def trucks_from_file(nb_file_trucks): 
+    filename = "input/trucks." + str(nb_file_trucks) + ".in"
+    f = open(filename, 'r')
+    n = int(f.readline().rstrip())
+    trucks=dict()
+    for i in range(n):
+        line=f.readline().split()
+        power = int(line[0])
+        price = int(line[1])
+        trucks[power]=price
+
+    return trucks 
 
 
 
