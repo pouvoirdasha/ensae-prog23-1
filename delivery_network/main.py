@@ -1,4 +1,4 @@
-from graph import Graph, graph_from_file, routes_from_file, trucks_from_file
+from graph import Graph, graph_from_file, get_paths_from_routes, trucks_from_file
 
 """
 data_path = "input/"
@@ -15,5 +15,5 @@ print(g)
 print(g.nodes)
 """
 
-x=trucks_from_file(0)
+x=trucks_from_file(1)
 print(x)

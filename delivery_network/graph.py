@@ -435,7 +435,7 @@ def estimated_time_kruskal(nb_file): #entrer le numéro du fichier
 
 #retourne une liste de listes triée par ordre decroissant en termes d'utilité 
 
-def routes_from_file(nb_file_routes): 
+def get_paths_from_routes(nb_file_routes): 
     filename = "input/routes." + str(nb_file_routes) + ".in"
     f = open(filename, 'r')
     n = int(f.readline().rstrip())
@@ -456,6 +456,7 @@ def routes_from_file(nb_file_routes):
     paths_profit_sorted=sorted(paths_profit , key=lambda l: -l[2])
     return paths_profit_sorted
 
+#On ajoute la fonction qui permet d'avoir un dictionnaire avec prix et puissances de camions
 def trucks_from_file(nb_file_trucks): 
     filename = "input/trucks." + str(nb_file_trucks) + ".in"
     f = open(filename, 'r')
@@ -467,15 +468,38 @@ def trucks_from_file(nb_file_trucks):
         price = int(line[1])
         trucks[power]=price
 
-    return trucks 
+    sorted_trucks = sorted(trucks.items(), key=lambda x: x[1], reverse=True)
+    return sorted_trucks 
 
 
+#Using greedy method
+def knapsack(trucks, paths, budget):
+    
+    # on va initialiser nos variables 
+    used_trucks = {power: 0 for power in trucks} #camions utilisés
+    used_paths = [] #chemins parcourus
+    total_profit = 0 #profit récupéré
+    remaining_budget = budget #budget restant 
+    
+    # notre liste path est déjà triée par ordre decroissant en termes de profits
+    #on fait une condition sur le budget restant - il doit etre supérieur à 0
+    while remaining_budget>=0:
+        for i in range(len(paths)):
+           for j in range(len(trucks)):
+            if trucks[j][0] >= paths[i][3] and trucks[j][1] <= remaining_budget:
+                remaining_budget -= trucks[j][1]
+                if trucks[j][0] in used_trucks:
+                    used_trucks[trucks[j][0]] += 1
+                else:
+                    used_trucks[trucks[j][0]] = 1
+                used_paths.append(i)
+                total_profit += paths[i][2]
+                
+                
 
-
-
-
-
-
+    return total_profit, used_paths, used_trucks, remaining_budget
+                
+        
 
 
 
