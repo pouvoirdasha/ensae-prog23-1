@@ -467,8 +467,8 @@ def trucks_from_file(nb_file_trucks):
         power = int(line[0])
         price = int(line[1])
         trucks[power]=price
-
-    sorted_trucks = sorted(trucks.items(), key=lambda x: x[1], reverse=True)
+#on trie les camions par ordre croissant
+    sorted_trucks = sorted(trucks.items(), key=lambda x: x[1], reverse=False)
     return sorted_trucks 
 
 
@@ -476,24 +476,29 @@ def trucks_from_file(nb_file_trucks):
 def knapsack(trucks, paths, budget):
     
     # on va initialiser nos variables 
-    used_trucks = {power: 0 for power in trucks} #camions utilisés
+    used_trucks = {} #camions utilisés
     used_paths = [] #chemins parcourus
     total_profit = 0 #profit récupéré
     remaining_budget = budget #budget restant 
     
     # notre liste path est déjà triée par ordre decroissant en termes de profits
-    #on fait une condition sur le budget restant - il doit etre supérieur à 0
-    while remaining_budget>=0:
-        for i in range(len(paths)):
-           for j in range(len(trucks)):
-            if trucks[j][0] >= paths[i][3] and trucks[j][1] <= remaining_budget:
-                remaining_budget -= trucks[j][1]
+    #les camions sont deja triés par ordre croissant en termes de prix 
+    #on parcourt les chemins et on trouve 
+    
+
+    for i in range(len(paths)):
+        for j in range(len(trucks)):
+            if trucks[j][0] >= paths[i][3] and trucks[j][1] <= remaining_budget and paths[i] not in used_paths:
+            #on pose une condition sur la puissance de camion qui doit etre supérieure au minpower du chemin, 
+            #le prix doit etre inférieur au budget restant 
+            #et le chemin ne doit pas avoir déjà été traité
+                remaining_budget -= trucks[j][1] #on soustrait le prix du camion du budget
                 if trucks[j][0] in used_trucks:
-                    used_trucks[trucks[j][0]] += 1
+                    used_trucks[trucks[j][0]] += 1 
                 else:
-                    used_trucks[trucks[j][0]] = 1
-                used_paths.append(i)
-                total_profit += paths[i][2]
+                    used_trucks[trucks[j][0]] = 1 
+                used_paths.append(paths[i]) #on rajouté le chemin traité à la liste des chemins
+                total_profit += paths[i][2] #on rajoute l'utilité du chemin parcouru 
                 
                 
 
