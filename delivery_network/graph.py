@@ -502,7 +502,7 @@ def knapsack(trucks, paths, budget):
                 
                 
 
-    return total_profit, used_paths, used_trucks, remaining_budget
+    return total_profit, used_paths, used_trucks, budget-remaining_budget
                 
         
 
