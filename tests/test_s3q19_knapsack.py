@@ -10,9 +10,10 @@ def test_q19(nbroutes, nbtrucks, b):
     t_fin= time.perf_counter()
     t=t_fin-t_dep
     
-    print("le profit est", total_profit, end='\n')
+    
     print("les chemins couverts", used_paths, end='\n')
     print("les camions utilisés", used_trucks, end='\n')
+    print("le profit est", total_profit, end='\n')
     print("le budget utilisé", used_budget, end='\n')
     print( "le temps d'execution est ", t, "s", end='\n ')
 
