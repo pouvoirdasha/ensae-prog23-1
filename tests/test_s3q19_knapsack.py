@@ -19,3 +19,4 @@ def test_q19(nbroutes, nbtrucks, b):
 
 test_q19(1,1,100000000)
 test_q19(1,2,100000000)
+test_q19(3,1,100000000)
